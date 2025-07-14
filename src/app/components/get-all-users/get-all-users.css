@@ -1,0 +1,7 @@
+.table-row-animation {
+  transition: background-color 0.3s ease;
+}
+
+.table-row-animation:hover {
+  background-color: #f5f9ff;
+}

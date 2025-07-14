@@ -1,0 +1,64 @@
+<nav class="navbar navbar-light bg-white shadow-sm px-4 py-2">
+    <div class="container-fluid d-flex justify-content-center">
+        <img src="images/formHeader.png" alt="Inspectors Union Co. Logo" class="img-fluid" style="max-height: 80px;" />
+    </div>
+</nav>
+
+<div class="d-flex flex-column min-vh-100">
+
+    <main>
+        <div class="container mt-5 d-flex justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-lg">
+                    <div class="card-header text-white text-center" style="background-color: #0047BA;">
+                        <h4 class="mb-0">Sign In</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="text" class="form-control" formControlName="email" />
+                                <div *ngIf="loginForm.get('emailOrPhone')?.invalid && loginForm.get('emailOrPhone')?.touched"
+                                    class="text-danger">
+                                    Email is required.
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <div class="input-group">
+                                    <input [type]="showPassword ? 'text' : 'password'" class="form-control"
+                                        formControlName="password" />
+                                    <button type="button" class="btn btn-outline-secondary"
+                                        (click)="togglePassword()">👁️</button>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100"
+                                [disabled]="loginForm.invalid">Login</button>
+                        </form>
+                        <!-- ACCESS DENIED MODAL -->
+                        <div class="modal fade" id="accessDeniedModal" tabindex="-1"
+                            aria-labelledby="accessDeniedModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content border-danger">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title" id="accessDeniedModalLabel">Access Denied</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        Access Denied. Contact Admin.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="mt-auto py-3 text-white text-center" style="background-color: #333333;">
+    </footer>
+</div>

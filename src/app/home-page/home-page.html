@@ -1,0 +1,118 @@
+<div class="d-flex flex-column min-vh-100" *ngIf="isBrowser">
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg bg-primary shadow-sm py-3 px-4 rounded-bottom-3" style="backdrop-filter: blur(6px);">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+
+      <!-- LEFT: Role-based Menus -->
+      <div class="d-flex align-items-center gap-3">
+        <!-- Admin Menu -->
+        <div *ngIf="roleId === 1" class="dropdown">
+          <button class="btn btn-outline-light fw-semibold rounded-pill px-3 py-2 dropdown-toggle"
+
+            type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person me-2"></i> User Management
+          </button>
+          <ul class="dropdown-menu shadow-sm border-0 rounded-3 animate__animated animate__fadeIn" aria-labelledby="userDropdown">
+            <li>
+              <a class="dropdown-item d-flex align-items-center" (click)="loadComponent('get-all-users')">
+                <i class="bi bi-eye me-2 text-primary"></i> View Users
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" (click)="loadComponent('add-user')">
+                <i class="bi bi-plus-circle me-2 text-success"></i> Add User
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Maker Menu -->
+        <div *ngIf="roleId === 2" class="dropdown">
+          <button class="btn btn-outline-light fw-semibold rounded-pill px-3 py-2 dropdown-toggle"
+            type="button" id="makerDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-tools me-2"></i> Maker Management
+          </button>
+          <ul class="dropdown-menu shadow-sm border-0 rounded-3 animate__animated animate__fadeIn" aria-labelledby="makerDropdown">
+            <li>
+              <a class="dropdown-item d-flex align-items-center" (click)="loadComponent('create-welder')">
+                <i class="bi bi-pencil-square me-2 text-primary"></i> Create Welder Report
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" (click)="loadComponent('report-status')">
+                <i class="bi bi-card-list me-2 text-warning"></i> Reports Status
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Checker Menu -->
+        <div *ngIf="roleId === 3" class="dropdown">
+          <button class="btn btn-outline-light fw-semibold  px-3 py-2 dropdown-toggle"
+            type="button" id="checkerDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-check2-square me-2"></i> Checker Management
+          </button>
+          <ul class="dropdown-menu shadow-sm border-0 rounded-3 animate__animated animate__fadeIn" aria-labelledby="checkerDropdown">
+            <li>
+              <a class="dropdown-item d-flex align-items-center" (click)="loadComponent('report-status')">
+                <i class="bi bi-card-list me-2 text-info"></i> Reports Status
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- CENTER: Branding -->
+      <div class="text-center">
+        <div class="fw-bold text-white fs-4">Inspectors Union Co.</div>
+        <div class="text-white-50 small fst-italic">Inspection & Industrial Services. Ltd</div>
+      </div>
+
+      <!-- RIGHT: Profile Dropdown -->
+      <div class="dropdown">
+        <button class="btn btn-outline-light rounded-pill dropdown-toggle d-flex align-items-center px-3 py-2"
+          type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-circle fs-4 me-2"></i>
+          <span class="d-none d-md-inline">{{ username }}</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 animate__animated animate__fadeIn"
+          aria-labelledby="profileDropdown">
+          <li>
+            <a class="dropdown-item text-danger fw-semibold d-flex align-items-center" (click)="logout()">
+              <i class="bi bi-box-arrow-right me-2"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ADD BUTTON (Admin Only) -->
+  <div class="bg-white shadow-sm px-4 py-3 border-bottom d-flex justify-content-end" *ngIf="roleId === 1">
+    <button class="btn btn-primary rounded-pill px-4 fw-semibold shadow-sm" (click)="loadComponent('add-user')">
+      <i class="bi bi-plus-circle me-2"></i> Add User
+    </button>
+  </div>
+
+<!-- CREATE WELDER REPORT BUTTON (Visible only to Maker) -->
+<div class="bg-white shadow-sm px-4 py-3 border-bottom d-flex justify-content-end" *ngIf="roleId === 2 || roleId === 3">
+  <button class="btn btn-success rounded-pill px-4 fw-semibold shadow-sm"
+          (click)="loadComponent('create-welder')">
+    <i class="bi bi-pencil-square me-2"></i> Create Welder Report
+  </button>
+</div>
+
+  <!-- MAIN CONTENT -->
+  <main class="container-fluid bg-light flex-grow-1 p-4">
+    <ng-container [ngSwitch]="activeComponent">
+      <app-add-user-form *ngSwitchCase="'add-user'"></app-add-user-form>
+      <app-report-status *ngSwitchCase="'report-status'"></app-report-status>
+      <app-get-all-users *ngSwitchCase="'get-all-users'"></app-get-all-users>
+      <app-welder-performance-qualification *ngSwitchCase="'create-welder'" [editCertNo]="editCertNo">
+      </app-welder-performance-qualification>
+
+      
+    </ng-container>
+  </main>
+</div>

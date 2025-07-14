@@ -1,0 +1,32 @@
+/* Style for inputs with only bottom border */
+.form-control {
+  border: none;
+  border-bottom: 1px solid #000;
+  border-radius: 0;
+  box-shadow: none !important;
+}
+
+.form-control:focus {
+  border-bottom: 2px solid #007bff;
+  outline: none;
+  box-shadow: none;
+}
+input[type="file"] {
+  cursor: pointer;
+}
+
+img {
+  object-fit: cover;
+  display:block;
+}
+.form-check-input {
+  width: 20px;
+  height: 20px;
+  accent-color: #0d6efd; 
+  border: 2px solid #000; 
+}
+
+.form-check-label {
+  font-weight: 600;
+  font-size: 1rem;
+}

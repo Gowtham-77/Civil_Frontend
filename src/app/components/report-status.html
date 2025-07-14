@@ -1,0 +1,219 @@
+<div class="container py-4">
+  <h4 class="text-center text-primary mb-4">Report Status Overview</h4>
+
+  <!-- Status Cards -->
+  <div class="row g-4 justify-content-center">
+    <!-- Approved -->
+    <div class="col-md-4">
+      <div class="card border-success shadow-sm text-center p-3 rounded-4" role="button"
+        [ngClass]="{'border-3 shadow': selectedCard === 'approved'}" (click)="loadApprovedReports()">
+        <div class="card-body">
+          <h5 class="card-title text-success">
+            <i class="bi bi-check-circle me-2"></i>Approved Reports
+          </h5>
+          <p class="text-muted small">View the list of all approved reports.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending -->
+    <div class="col-md-4">
+      <div class="card border-warning shadow-sm text-center p-3 rounded-4" role="button"
+        [ngClass]="{'border-3 shadow': selectedCard === 'pending'}" (click)="loadPendingReports()">
+        <div class="card-body">
+          <h5 class="card-title text-warning">
+            <i class="bi bi-hourglass-split me-2"></i>Pending Reports
+          </h5>
+          <p class="text-muted small">Reports awaiting review or approval.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rejected -->
+    <div class="col-md-4">
+      <div class="card border-danger shadow-sm text-center p-3 rounded-4" role="button"
+        [ngClass]="{'border-3 shadow': selectedCard === 'rejected'}" (click)="loadRejectedReports()">
+        <div class="card-body">
+          <h5 class="card-title text-danger">
+            <i class="bi bi-x-circle me-2"></i>Rejected Reports
+          </h5>
+          <p class="text-muted small">Reports that failed to meet standards.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Reports Table -->
+  <div *ngIf="showPendingTable" class="card shadow-sm border-0 mt-5 p-4">
+    <h5 class="text-primary text-center fw-bold mb-4">Pending Reports List</h5>
+
+    <!-- Show if no pending reports -->
+    <div *ngIf="pendingCerts.length === 0" class="text-center text-muted py-4">
+      <i class="bi bi-folder-x fs-1 d-block mb-2"></i>
+      <strong>No pending reports found.</strong>
+    </div>
+
+    <!-- Show table only when there are pending reports -->
+    <div *ngIf="pendingCerts.length > 0" class="table-responsive">
+      <table class="table table-bordered table-hover align-middle text-center">
+        <thead class="table-warning">
+          <tr>
+            <th>CERT NO</th>
+            <th>CLIENT</th>
+            <th>Created Date</th>
+            <th>CREATED BY</th>
+            <th>UPDATED BY</th>
+            <th>UPDATED DATE</th>
+            <th>VIEW</th>
+            <th>EDIT</th>
+            <th>DOWNLOAD</th>
+            <th *ngIf="roleId === 3">REVIEW</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cert of pendingCerts">
+            <td class="fw-semibold text-dark">{{ cert.certificateNo }}</td>
+            <td>{{ cert.clientOrContractor }}</td>
+            <td>{{ cert.testDate }}</td>
+            <td>{{ cert.createdBy || '—' }}</td>
+            <td>{{ cert.updatedBy || '—' }}</td>
+            <td>{{ cert.updatedDate || '—' }}</td>
+
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="viewReport(cert.certificateNo)">
+                <i class="bi bi-eye"></i> View
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-outline-warning btn-sm" (click)="editReport(cert.certificateNo,cert.createdBy)">
+                <i class="bi bi-pencil-square"></i> Edit
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-outline-success btn-sm" (click)="downloadPDF(cert.certificateNo)">
+                <i class="bi bi-download"></i> PDF
+              </button>
+            </td>
+            <td *ngIf="roleId === 3">
+              <button class="btn btn-outline-secondary btn-sm" (click)="reviewReport(cert.certificateNo)">
+                <i class="bi bi-search"></i> Review
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngIf="showApprovedTable" class="card shadow-sm border-0 mt-5 p-4">
+    <h5 class="text-success text-center fw-bold fs-4 mb-4">Approved Reports List</h5>
+
+    <div *ngIf="approvedCerts.length === 0" class="text-center text-muted py-4">
+      <i class="bi bi-folder-x fs-1 d-block mb-2"></i>
+      <strong>No approved reports found.</strong>
+    </div>
+
+    <div *ngIf="approvedCerts.length > 0" class="table-responsive">
+      <table class="table table-bordered table-hover align-middle text-center">
+        <thead class="table-success">
+          <tr>
+            <th>CERT NO</th>
+            <th>CLIENT</th>
+            <th>Created Date</th>
+            <th>VERIFIED DATE</th>
+            <th>VERIFIED BY</th>
+            <th>CREATED BY</th>
+            <th>UPDATED BY</th>
+            <th>UPDATED DATE</th>
+            <th>VIEW</th>
+            <th>DOWNLOAD</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cert of approvedCerts">
+            <td class="fw-semibold text-dark">{{ cert.certificateNo }}</td>
+            <td>{{ cert.clientOrContractor }}</td>
+            <td>{{ cert.testDate }}</td>
+            <td>{{ cert.verifiedDate }}</td>
+            <td>{{ cert.verifiedBy || '—' }}</td>
+            <td>{{ cert.createdBy || '—' }}</td>
+            <td>{{ cert.updatedBy || '—' }}</td>
+            <td>{{ cert.updatedDate || '—' }}</td>
+
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="viewReport(cert.certificateNo)">
+                <i class="bi bi-eye"></i> View
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-outline-success btn-sm" (click)="downloadPDF(cert.certificateNo)">
+                <i class="bi bi-download"></i> PDF
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Rejected Reports Table -->
+  <div *ngIf="showRejectedTable" class="card shadow-sm border-0 mt-5 p-4">
+    <h5 class="text-danger text-center fw-bold fs-4 mb-4">Rejected Reports List</h5>
+
+    <!-- Empty State -->
+    <div *ngIf="rejectedCerts.length === 0" class="text-center text-muted py-4">
+      <i class="bi bi-folder-x fs-1 d-block mb-2"></i>
+      <strong>No rejected reports found.</strong>
+    </div>
+
+    <!-- Table -->
+    <div *ngIf="rejectedCerts.length > 0" class="table-responsive">
+      <table class="table table-bordered table-hover align-middle text-center">
+        <thead class="table-danger">
+          <tr>
+            <th>CERT NO</th>
+            <th>CLIENT</th>
+            <th>Created Date</th>
+            <th>VERIFIED DATE</th>
+            <th>VERIFIED BY</th>
+            <th>REMARKS</th>
+            <th>CREATED BY</th>
+            <th>UPDATED BY</th>
+            <th>UPDATED DATE</th>
+            <th>VIEW</th>
+            <th>EDIT</th>
+            <th>DOWNLOAD</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cert of rejectedCerts">
+            <td class="fw-semibold text-dark">{{ cert.certificateNo }}</td>
+            <td>{{ cert.clientOrContractor }}</td>
+            <td>{{ cert.testDate }}</td>
+            <td>{{ cert.verifiedDate }}</td>
+            <td>{{ cert.verifiedBy || '—' }}</td>
+            <td>{{ cert.remarks || '—' }}</td>
+            <td>{{ cert.createdBy || '—' }}</td>
+            <td>{{ cert.updatedBy || '—' }}</td>
+            <td>{{ cert.updatedDate || '—' }}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="viewReport(cert.certificateNo)">
+                <i class="bi bi-eye"></i> View
+              </button>
+            </td>
+             <td>
+              <button class="btn btn-outline-warning btn-sm" (click)="editReport(cert.certificateNo,cert.createdBy)">
+                <i class="bi bi-pencil-square"></i> Edit
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-outline-success btn-sm" (click)="downloadPDF(cert.certificateNo)">
+                <i class="bi bi-download"></i> PDF
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+</div>

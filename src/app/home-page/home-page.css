@@ -1,0 +1,21 @@
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+
+.sidebar .nav-link {
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.sidebar .nav-link:hover {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.navbar {
+  z-index: 1020;
+}

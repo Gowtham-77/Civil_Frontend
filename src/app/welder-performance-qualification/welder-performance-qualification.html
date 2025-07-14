@@ -1,0 +1,584 @@
+<form [formGroup]="welderForm" (ngSubmit)="onSubmit()" class="container my-4" #pdfContent>
+  <div class="d-flex justify-content-center my-4">
+    <img src="/images/formHeader.png" alt="Inspectors Union Co. Logo" class="img-fluid"
+      style="height: 80px; object-fit: contain;">
+  </div>
+  <h4 class="text-center fw-bold mb-4 text-decoration-underline">WELDER / WELDING OPERATOR PERFORMANCE QUALIFICATION
+    TEST RECORD</h4>
+
+  <!-- Certificate Number Row -->
+  <div class="row align-items-center mb-3">
+    <div class="col-md-6">
+      <label class="form-label fw-bold">Cert. No.:</label>
+      <input type="text" class="form-control" formControlName="certificateNo">
+    </div>
+    <div class="col-md-3 offset-md-3 text-center">
+      <label class="form-label fw-bold d-block text-center mb-1">Photo</label>
+      <div class="border rounded position-relative mx-auto d-flex justify-content-center align-items-center"
+        style="width: 120px; height: 120px; overflow: hidden; background-color: #f8f9fa; cursor: pointer;">
+
+        <!-- Always render <img>, fallback to 1x1 transparent -->
+        <img [src]="imagePreview || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='"
+          alt="Uploaded Photo" class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover;">
+
+        <!-- Optional text below image -->
+        <span *ngIf="!imagePreview" class="text-muted small position-absolute bottom-0 mb-1">Click to
+          upload</span>
+
+        <!-- File input -->
+        <input type="file" accept="image/*" (change)="onFileSelected($event)"
+          class="position-absolute top-0 start-0 w-100 h-100 opacity-0">
+      </div>
+    </div>
+
+
+
+  </div>
+
+  <!-- Job and Welder Info -->
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="form-label fw-bold">IU Job No.:</label>
+      <input type="text" class="form-control" formControlName="jobNo">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Date welded:</label>
+      <input type="date" class="form-control" formControlName="testDate">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Welder Name:</label>
+      <input type="text" class="form-control" formControlName="welderName">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Stamp/Welder No.:</label>
+      <input type="text" class="form-control" formControlName="welderStampNo">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Welder ID No.:</label>
+      <input type="text" class="form-control" formControlName="welderIdNo">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Passport No.:</label>
+      <input type="text" class="form-control" formControlName="passportNo">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Using WPS No.:</label>
+      <input type="text" class="form-control" formControlName="wpsNo">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label fw-bold">IQAMA No.:</label>
+      <input type="text" class="form-control" formControlName="iqamaNo">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Base Material:</label>
+      <input type="text" class="form-control" formControlName="baseMeterial">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Nationality:</label>
+      <input type="text" class="form-control" formControlName="nationality">
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Thickness:</label>
+      <input type="text" class="form-control" formControlName="thickness">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Client/Contractor:</label>
+      <input type="text" class="form-control" formControlName="clientOrContractor">
+    </div>
+  </div>
+
+  <!-- Production/Test Checkboxes -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="prodWeld">
+        <label class="form-check-label" for="prodWeld">Production weld</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="testCoupon">
+        <label class="form-check-label" for="testCoupon">Test coupon</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Divider -->
+  <h5 class="text-center fw-bold py-2 mb-4 border-top border-bottom text-uppercase">
+    TESTING CONDITIONS AND QUALIFICATIONS LIMITS
+  </h5>
+
+  <!-- Table Header -->
+  <div class="row fw-bold bg-light border py-2 text-center">
+    <div class="col-md-4 border-end">Variables</div>
+    <div class="col-md-4 border-end">Actual Value</div>
+    <div class="col-md-4">Range Qualified</div>
+  </div>
+
+  <!-- Welding Process Row -->
+  <div class="row align-items-center border border-top-0 py-2" formGroupName="weldingProcess">
+    <div class="col-md-4">
+      <strong>Welding Process</strong><br>
+      <small class="text-muted">Type (i.e., Manual, Semi-auto) used</small>
+    </div>
+    <div class="col-md-4">
+      <input type="text" class="form-control" formControlName="actual">
+    </div>
+    <div class="col-md-4">
+      <input type="text" class="form-control" formControlName="rangeQualified">
+    </div>
+  </div>
+
+
+  <!-- Base Metal  -->
+  <!-- Divider Heading -->
+  <div class="row border-top pt-3">
+    <div class="col-12">
+      <h6 class="fw-bold text-uppercase ">Base Metal</h6>
+    </div>
+  </div>
+
+  <!-- Specification No. -->
+  <div class="row align-items-center border-top py-2" formGroupName="baseMaterial">
+    <div class="col-md-4">Specification No:</div>
+    <div class="col-md-4" formGroupName="specificationNo">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="specificationNo">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Classification No. -->
+  <div class="row align-items-center border-top py-2" formGroupName="baseMaterial">
+    <div class="col-md-4">Classification No:</div>
+    <div class="col-md-4" formGroupName="classificationNo">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="classificationNo">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+
+
+
+  <!-- Divider Heading: Joint -->
+  <div class="row border-top pt-3">
+    <div class="col-12">
+      <h6 class="fw-bold text-uppercase">Joint</h6>
+    </div>
+  </div>
+
+  <!-- Pipe or Plate -->
+  <div class="row align-items-center border-top py-2" formGroupName="joint">
+    <div class="col-md-4">Pipe or Plate</div>
+    <div class="col-md-4" formGroupName="pipeOrPlate">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="pipeOrPlate">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Type of Joint -->
+  <div class="row align-items-center border-top py-2" formGroupName="joint">
+    <div class="col-md-4">Type of Joint (Butt, Lap, etc)</div>
+    <div class="col-md-4" formGroupName="typeOfJoint">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="typeOfJoint">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Type of Weld -->
+  <div class="row align-items-center border-top py-2" formGroupName="joint">
+    <div class="col-md-4">Type of Weld (Groove, Fillet)</div>
+    <div class="col-md-4" formGroupName="typeOfWeld">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="typeOfWeld">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Consumable Inserts -->
+  <div class="row align-items-center border-top py-2" formGroupName="joint">
+    <div class="col-md-4">Consumable Inserts</div>
+    <div class="col-md-4" formGroupName="consumableInserts">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="consumableInserts">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Backing -->
+  <div class="row align-items-center border-top py-2" formGroupName="joint">
+    <div class="col-md-4">Backing</div>
+    <div class="col-md-4" formGroupName="backing">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="backing">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Pipe Diameter -->
+  <div class="row align-items-center border-top py-2" formGroupName="joint">
+    <div class="col-md-4">Pipe Diameter</div>
+    <div class="col-md-4" formGroupName="pipeDiameter">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="pipeDiameter">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+
+
+
+  <!-- Filler Metal -->
+  <!-- Divider Heading: Filler Metal / Electrode -->
+  <div class="row border-top pt-3">
+    <div class="col-12">
+      <h6 class="fw-bold text-uppercase">Filler Metal / Electrode</h6>
+    </div>
+  </div>
+
+  <!-- Specification -->
+  <div class="row align-items-center border-top py-2" formGroupName="fillerMetal">
+    <div class="col-md-4">Filler Metal/Electrode Specification</div>
+    <div class="col-md-4" formGroupName="specification">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="specification">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Classification -->
+  <div class="row align-items-center border-top py-2" formGroupName="fillerMetal">
+    <div class="col-md-4">Filler Metal/Electrode Classification No.</div>
+    <div class="col-md-4" formGroupName="classification">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="classification">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- F-number -->
+  <div class="row align-items-center border-top py-2" formGroupName="fillerMetal">
+    <div class="col-md-4">F-number</div>
+    <div class="col-md-4" formGroupName="fNumber">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="fNumber">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Divider Heading: Deposited Thickness for Each Welding Process -->
+  <div class="row border-top pt-3">
+    <div class="col-12">
+      <h6 class="fw-bold text-uppercase ">
+        Deposited Thickness for Each Welding Process
+      </h6>
+    </div>
+  </div>
+
+  <!-- Process: GTAW + SMAW -->
+  <div class="row align-items-center border-top py-2" formGroupName="depositedThickness">
+    <div class="col-md-4">Process: GTAW + SMAW</div>
+    <div class="col-md-4" formGroupName="gtawSmaw">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="gtawSmaw">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Specification -->
+  <div class="row align-items-center border-top py-2" formGroupName="depositedThickness">
+    <div class="col-md-4">Specification</div>
+    <div class="col-md-4" formGroupName="specification">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="specification">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+  <!-- Divider Heading: Welding Parameters -->
+  <div class="row border-top pt-3">
+    <div class="col-12">
+      <h6 class="fw-bold text-uppercase">
+        Welding Parameters
+      </h6>
+    </div>
+  </div>
+
+  <!-- Position -->
+  <div class="row align-items-center border-top py-2" formGroupName="weldingParameters">
+    <div class="col-md-4">Position</div>
+    <div class="col-md-4" formGroupName="position">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="position">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Welding Progression -->
+  <div class="row align-items-center border-top py-2" formGroupName="weldingParameters">
+    <div class="col-md-4">Welding progression</div>
+    <div class="col-md-4" formGroupName="progression">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="progression">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Gas Backing -->
+  <div class="row align-items-center border-top py-2" formGroupName="weldingParameters">
+    <div class="col-md-4">Gas backing</div>
+    <div class="col-md-4" formGroupName="gasBacking">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="gasBacking">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+  <!-- Current/Polarity - GTAW + SMAW -->
+  <div class="row align-items-center border-top py-2" formGroupName="weldingParameters">
+    <div class="col-md-4">Current/Polarity - GTAW + SMAW</div>
+    <div class="col-md-4" formGroupName="currentPolarity">
+      <input type="text" class="form-control mb-2" placeholder="Actual" formControlName="actual">
+    </div>
+    <div class="col-md-4" formGroupName="currentPolarity">
+      <input type="text" class="form-control mb-2" placeholder="Range Qualified" formControlName="rangeQualified">
+    </div>
+  </div>
+
+
+
+  <!-- Divider Heading: Tests Conducted -->
+<div class="row border-top pt-3">
+  <div class="col-12">
+    <h6 class="fw-bold text-uppercase">Tests Conducted</h6>
+  </div>
+</div>
+
+<!-- Table Header -->
+<div class="row fw-semibold border-bottom pb-2">
+  <div class="col-md-3">Test</div>
+  <div class="col-md-5">Description</div>
+  <div class="col-md-4">Result</div>
+</div>
+
+<div formGroupName="testsConducted">
+  <!-- Each test row -->
+  <div class="row align-items-center py-2 border-bottom" formGroupName="bendTest">
+    <div class="col-md-3 d-flex justify-content-between align-items-center">
+      <label for="bendTest" class="form-label m-0">Bend Test</label>
+      <input type="checkbox" class="form-check-input" formControlName="selected" id="bendTest">
+    </div>
+    <div class="col-md-5">
+      <input type="text" class="form-control" formControlName="description" placeholder="Description">
+    </div>
+    <div class="col-md-4">
+      <input type="text" class="form-control" formControlName="result" placeholder="Result">
+    </div>
+  </div>
+
+  <div class="row align-items-center py-2 border-bottom" formGroupName="radiography">
+    <div class="col-md-3 d-flex justify-content-between align-items-center">
+      <label for="radiography" class="form-label m-0">Radiography</label>
+      <input type="checkbox" class="form-check-input" formControlName="selected" id="radiography">
+    </div>
+    <div class="col-md-5">
+      <input type="text" class="form-control" formControlName="description" placeholder="Description">
+    </div>
+    <div class="col-md-4">
+      <input type="text" class="form-control" formControlName="result" placeholder="Result">
+    </div>
+  </div>
+
+  <div class="row align-items-center py-2 border-bottom" formGroupName="ultrasonic">
+    <div class="col-md-3 d-flex justify-content-between align-items-center">
+      <label for="ultrasonic" class="form-label m-0">Ultrasonic</label>
+      <input type="checkbox" class="form-check-input" formControlName="selected" id="ultrasonic">
+    </div>
+    <div class="col-md-5">
+      <input type="text" class="form-control" formControlName="description" placeholder="Description">
+    </div>
+    <div class="col-md-4">
+      <input type="text" class="form-control" formControlName="result" placeholder="Result">
+    </div>
+  </div>
+
+  <div class="row align-items-center py-2 border-bottom" formGroupName="macroEtch">
+    <div class="col-md-3 d-flex justify-content-between align-items-center">
+      <label for="macroEtch" class="form-label m-0">Macro Etch</label>
+      <input type="checkbox" class="form-check-input" formControlName="selected" id="macroEtch">
+    </div>
+    <div class="col-md-5">
+      <input type="text" class="form-control" formControlName="description" placeholder="Description">
+    </div>
+    <div class="col-md-4">
+      <input type="text" class="form-control" formControlName="result" placeholder="Result">
+    </div>
+  </div>
+
+  <div class="row align-items-center py-2 border-bottom" formGroupName="fracture">
+    <div class="col-md-3 d-flex justify-content-between align-items-center">
+      <label for="fracture" class="form-label m-0">Fracture</label>
+      <input type="checkbox" class="form-check-input" formControlName="selected" id="fracture">
+    </div>
+    <div class="col-md-5">
+      <input type="text" class="form-control" formControlName="description" placeholder="Description">
+    </div>
+    <div class="col-md-4">
+      <input type="text" class="form-control" formControlName="result" placeholder="Result">
+    </div>
+  </div>
+
+  <div class="row align-items-center py-2 border-bottom" formGroupName="other">
+    <div class="col-md-3 d-flex justify-content-between align-items-center">
+      <label for="other" class="form-label m-0">Other</label>
+      <input type="checkbox" class="form-check-input" formControlName="selected" id="other">
+    </div>
+    <div class="col-md-5">
+      <input type="text" class="form-control" formControlName="description" placeholder="Description">
+    </div>
+    <div class="col-md-4">
+      <input type="text" class="form-control" formControlName="result" placeholder="Result">
+    </div>
+  </div>
+</div>
+
+
+  <!-- Certification Note -->
+  <div class="row mt-3">
+    <div class="col-12">
+      <small class="text-muted">
+        We certify that the information in this record is correct and that the test coupons were prepared, welded, and
+        tested in accordance with the requirements of ASME Sec. IX, 2023
+      </small>
+    </div>
+  </div>
+
+
+  <!-- Certification Section -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <label class="form-label">Welding Inspector (Name & Cert Number):</label>
+      <input type="text" class="form-control" formControlName="inspectorNameCertNo"
+        placeholder="Enter inspector name / cert number">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Client/Contractor Representative Name:</label>
+      <input type="text" class="form-control" formControlName="clientRepName" placeholder="Enter representative name">
+    </div>
+  </div>
+
+  <div class="row mb-5">
+    <div class="col-md-6">
+      <label class="form-label">Signature & Date:</label>
+      <input type="text" class="form-control">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Signature & Date:</label>
+      <input type="text" class="form-control">
+    </div>
+  </div>
+ 
+
+<!-- Divider -->
+<hr class="my-4">
+
+<!-- Footer Logo Row -->
+<div class="row mb-2">
+  <div class="col-12 d-flex justify-content-center flex-wrap gap-4 align-items-center">
+    <img src="/images/asnt.jpg" alt="ASNT Logo" style="height: 60px;">
+    <img src="/images/drops.jpeg" alt="DROPS Logo" style="height: 60px;">
+    <img src="/images/iadc.png" alt="IADC Logo" style="height: 60px;">
+  </div>
+</div>
+<!-- Contact Details -->
+<div class="row text-center">
+  <div class="col-12 small fw-bold text-primary">
+    P.O. Box Number: 2404, Jubail 31951, Saudi Arabia,
+    <span class="text-dark">Phone: (013) 3628850</span>,
+    <span class="text-dark">Fax: (013) 3628092</span>,
+    Email: <a href="mailto:info&#64;iu-inspection.com">info&#64;iu-inspection.com</a>
+    <span class="text-dark">www.iu-inspection.com</span>
+  </div>
+</div>
+
+
+<!-- Doc Info -->
+<div class="row text-center mt-1">
+  <div class="col-12 small fw-bold">
+    DOC # IU-NDT-WI-FORM-01 Rev.01
+    <span class="text-dark">Issue Date: 01/10/2024</span>
+  </div>
+</div>
+ <div class="text-center my-4" *ngIf="!reviewMode">
+    <button class="btn btn-primary px-5" type="submit">Submit</button>
+  </div>
+</form>
+<!-- Review Footer: Only visible in Review Mode -->
+<div *ngIf="reviewMode" class="mt-5 border-top pt-4">
+  <div class="mb-3">
+    <label for="remarks" class="form-label fw-semibold">Remarks</label>
+    <textarea [(ngModel)]="remarks" class="form-control" id="remarks" rows="3" placeholder="Enter your review remarks..."></textarea>
+  </div>
+
+  <div class="d-flex justify-content-end gap-3">
+    <button class="btn btn-danger" (click)="submitReview('REJECTED')">
+      <i class="bi bi-x-circle"></i> Reject
+    </button>
+    <button class="btn btn-success" (click)="submitReview('APPROVED')">
+      <i class="bi bi-check-circle"></i> Approve
+    </button>
+  </div>
+</div>
+<!-- Success Modal -->
+<!-- Place this at the root level of the template, not inside *ngIf -->
+<div class="modal fade" id="successModalBackdrop" tabindex="-1" role="dialog" #successModal>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Success</h5>
+      </div>
+      <div class="modal-body">
+        <p>Form submitted successfully.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="goToUserHome()">Go to Home</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+

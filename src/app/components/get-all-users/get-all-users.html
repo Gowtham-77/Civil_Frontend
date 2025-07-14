@@ -1,0 +1,96 @@
+<div class="container my-5">
+  <div class="border rounded-4 shadow-sm overflow-hidden">
+
+    <!-- Table Header -->
+    <div class="bg-light border-bottom px-4 py-3 text-center">
+      <h5 class="mb-0 fw-semibold text-primary d-inline-flex align-items-center justify-content-center">
+        <i class="bi bi-people-fill me-2"></i>All Registered Users
+      </h5>
+    </div>
+
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table align-middle mb-0 text-center">
+        <thead class="table-light">
+          <tr class="text-uppercase small text-secondary">
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Change Status</th>
+            <th>Update</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td class="fw-medium">{{ user.userName }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="badge bg-secondary-subtle text-dark px-3 py-1 rounded-pill">
+                {{ getRoleName(user.roleId) }}
+              </span>
+            </td>
+            <td>
+              <span class="badge px-3 py-1 rounded-pill fw-semibold"
+                [ngClass]="user.status === 1 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
+                {{ user.status === 1 ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm" [ngClass]="user.status === 1 ? 'btn-outline-danger' : 'btn-outline-success'"
+                (click)="toggleStatus(user)">
+                {{ user.status === 1 ? 'Deactivate' : 'Activate' }}
+              </button>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary" (click)="editUser(user)">
+                Edit
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="selectedUser" class="border-top mt-4 pt-4 px-4">
+        <h6 class="text-primary mb-3">Edit User: {{ selectedUser.email }}</h6>
+
+        <form (ngSubmit)="updateUser()" #editForm="ngForm">
+          <div class="mb-3">
+            <label>Email</label>
+            <input type="email" class="form-control" [value]="selectedUser.email" disabled />
+          </div>
+
+          <div class="mb-3">
+            <label>User Name</label>
+            <input type="text" class="form-control" [(ngModel)]="selectedUser.userName" name="userName" required />
+          </div>
+
+          <div class="mb-3">
+            <label>Role</label>
+            <select class="form-select" [(ngModel)]="selectedUser.roleId" name="roleId" required>
+              <option [value]="1">Admin</option>
+              <option [value]="2">Maker</option>
+              <option [value]="3">Checker</option>
+            </select>
+          </div>
+
+          <button class="btn btn-success me-2" type="submit" [disabled]="editForm.invalid">Update</button>
+          <button class="btn btn-secondary" type="button" (click)="cancelEdit()">Cancel</button>
+        </form>
+      </div>
+
+
+      <!-- Popup Box for Status Message -->
+      <div #statusPopup
+        class="position-fixed top-50 start-50 translate-middle text-center bg-white p-4 rounded-4 shadow border border-success"
+        style="z-index: 1055; min-width: 320px; display: none;">
+        <div class="text-success fw-semibold fs-5" #popupMessage>
+          User status updated
+        </div>
+        <button class="btn btn-outline-success btn-sm mt-3" (click)="closePopup()">OK</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
